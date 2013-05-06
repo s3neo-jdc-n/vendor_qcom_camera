@@ -345,10 +345,12 @@ typedef struct mm_channel {
     /* reference to parent cam_obj */
     struct mm_camera_obj* cam_obj;
 
-    // Samsung stuff for zsl snapshots and AE bracketting
-    uint8_t start_snapshot;
-    uint8_t is_zsl_snapshot;
-    uint8_t samsung; // the rest is also zsl stuff...
+    /* control for zsl led */
+    uint8_t startZSlSnapshotCalled;
+    uint8_t needLEDFlash;
+
+    // Samsung stuff for zsl snapshots and AE bracketting??
+    uint8_t samsung;
     uint8_t samsung0;
     uint8_t samsung1;
     uint8_t samsung2;
