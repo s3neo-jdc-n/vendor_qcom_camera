@@ -8,8 +8,10 @@ Tooks used for decompiling / reverse engineering:
 
 QCOM Camera HAL for Samsung qcom powered devices
 
-This repo holds the semi-working version of a Qcom HAL (this is not working just for development purposes and how the overall Qcom camera system works)
+This repo holds the working version of a Qcom HAL for samsung devices (msm8226 supported currently) (this is for development purposes and how the overall Qcom camera system works)
 Its primary for the S3Neo but should theoretically work for the msm8226 and msm8974 family.
+
+For msm8974 make sure your check the sizes of my edited structs and see if they match, only if this ever gets attention :(
 
 Current state:
 - sets up every parameters from server
