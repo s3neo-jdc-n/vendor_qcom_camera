@@ -530,6 +530,7 @@ private:
     String8 createFpsRangeString(const cam_fps_range_t *fps,
                                  int len,
                                  int &default_fps_index);
+    static int compareFPSValues(const void *p1, const void *p2);
     String8 createFpsString(const cam_fps_range_t *fps, int len);
     String8 createZoomRatioValuesString(int *zoomRatios, int length);
     int lookupAttr(const QCameraMap arr[], int len, const char *name);
@@ -582,6 +583,7 @@ private:
     parm_buffer_t     *m_pParamBuf;  // ptr to param buf in m_pParamHeap
 
     bool m_bZslMode;                // if ZSL is enabled
+    bool m_bZslMode_new;
     bool m_bRecordingHint;          // local copy of recording hint
     bool m_bRecordingHint_new;
     bool m_bHistogramEnabled;       // if histogram is enabled
