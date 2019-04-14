@@ -555,6 +555,7 @@ QCameraParameters::QCameraParameters()
       m_pParamBuf(NULL),
       m_bZslMode(false),
       m_bRecordingHint(false),
+      m_bRecordingHint_new(false),
       m_bHistogramEnabled(false),
       m_nFaceProcMask(0),
       m_bDebugFps(false),
@@ -607,6 +608,7 @@ QCameraParameters::QCameraParameters(const String8 &params)
     m_pParamBuf(NULL),
     m_bZslMode(false),
     m_bRecordingHint(false),
+    m_bRecordingHint_new(false),
     m_bHistogramEnabled(false),
     m_nFaceProcMask(0),
     m_bDebugFps(false),
@@ -5085,7 +5087,14 @@ int QCameraParameters::getMaxUnmatchedFramesInQueue()
 int QCameraParameters::setRecordingHintValue(int32_t value)
 {
     ALOGD("%s: VideoHint = %d", __func__, value);
-    m_bRecordingHint = (value > 0)? true : false;
+    bool newValue = (value > 0)? true : false;
+
+    if ( m_bRecordingHint != newValue ) {
+        m_bNeedRestart = true;
+        m_bRecordingHint_new = newValue;
+    } else {
+        m_bRecordingHint_new = m_bRecordingHint;
+    }
     return AddSetParmEntryToBatch(m_pParamBuf,
                                   CAM_INTF_PARM_RECORDING_HINT,
                                   sizeof(value),
@@ -5559,6 +5568,41 @@ int32_t QCameraParameters::updateFocusDistances(cam_focus_distances_info_t *focu
     ALOGD("%s: setting KEY_FOCUS_DISTANCES as %s", __FUNCTION__, str.string());
     set(QCameraParameters::KEY_FOCUS_DISTANCES, str.string());
     return NO_ERROR;
+}
+
+/*===========================================================================
+ * FUNCTION   : updateRecordingHintValue
+ *
+ * DESCRIPTION: update recording hint locally and to daemon
+ *
+ * PARAMETERS :
+ *   @value   : video hint value
+ *
+ * RETURN     : int32_t type of status
+ *              NO_ERROR  -- success
+ *              none-zero failure code
+ *==========================================================================*/
+int32_t QCameraParameters::updateRecordingHintValue(int32_t value)
+{
+    int32_t rc = NO_ERROR;
+    if(initBatchUpdate(m_pParamBuf) < 0 ) {
+        ALOGE("%s:Failed to initialize group update table", __func__);
+        return BAD_TYPE;
+    }
+
+    rc = setRecordingHintValue(value);
+    if (rc != NO_ERROR) {
+        ALOGE("%s:Failed to update table", __func__);
+        return rc;
+    }
+
+    rc = commitSetBatch();
+    if (rc != NO_ERROR) {
+        ALOGE("%s:Failed to update recording hint", __func__);
+        return rc;
+    }
+
+    return rc;
 }
 
 /*===========================================================================
@@ -6124,6 +6168,9 @@ int32_t QCameraParameters::commitParamChanges()
         set(k, v);
     }
     m_tempMap.clear();
+
+    // update local changes
+    m_bRecordingHint = m_bRecordingHint_new;
     return NO_ERROR;
 }
 
