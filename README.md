@@ -16,15 +16,16 @@ Current state:
 - full m_pCapability (querycap) functionality
 - parm_buffer_t matches samsung size (parm_type_t filles with int array to match samsung size)
 - camera_open is modified to match samsung standarts
-- initdefaultparameters() is modified as samsung doesnt use the parameters from server but hardcode them inside the HALs private Qcamera::Parameters class
-- start_preview initializes correctly but fails at VIDIOC_STREAMON (buffer size may mismatch)
+- initdefaultparameters() is modified as samsung doesnt use the parameters from server but hardcode them inside the HALs private Qcamera::Parameters class (i know why)
+- start_preview initializes correctly and displays on both fron and back with no issues
+- photos and video can be taken on back camera, front camera still crashes (were using the wrong stream type and encoding isnt really "perfect"
 
 
 To-Do list:
 - edit the QcameraHWI functions, they have some magic in them
-- decompile the structs mm-camera-intf is using
-- fix the server calls to kernel (our buffer is too large)
+- decompile the structs mm-camera-intf is using DONE!
+- fix the server calls to kernel (our buffer is too large) DONE!
 - get the full kernel IOCTL list the server is using including the I2C write arrays
 
 Next Milestone:
-- create mm-camera-intf which works with stock HAL so we can read the actual IOCTL's passing through it.
+- create mm-camera-intf which works with stock HAL so we can read the actual IOCTL's passing through it. SKIPPED ^^
