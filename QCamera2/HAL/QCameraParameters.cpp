@@ -1005,9 +1005,9 @@ int32_t QCameraParameters::setPreviewSize(const QCameraParameters& params)
     ALOGV("Requested preview size %d x %d", width, height);
 
     // Validate the preview size
-    for (size_t i = 0; i < m_pCapability->preview_sizes_tbl_cnt; ++i) {
-        if (width ==  m_pCapability->preview_sizes_tbl[i].width
-           && height ==  m_pCapability->preview_sizes_tbl[i].height) {
+    for (size_t i = 0; i < m_pCapability->video_sizes_tbl_cnt; ++i) {
+        if (width ==  m_pCapability->video_sizes_tbl[i].width
+           && height ==  m_pCapability->video_sizes_tbl[i].height) {
             // check if need to restart preview in case of preview size change
             int old_width, old_height;
             CameraParameters::getPreviewSize(&old_width, &old_height);
@@ -2923,15 +2923,15 @@ int32_t QCameraParameters::initDefaultParameters()
     setFloat(KEY_VERTICAL_VIEW_ANGLE, m_pCapability->ver_view_angle);
 
     // Set supported preview sizes
-    if (m_pCapability->preview_sizes_tbl_cnt > 0 &&
-        m_pCapability->preview_sizes_tbl_cnt <= MAX_SIZES_CNT) {
+    if (m_pCapability->video_sizes_tbl_cnt > 0 &&
+        m_pCapability->video_sizes_tbl_cnt <= MAX_SIZES_CNT) {
         String8 previewSizeValues = createSizesString(
-                m_pCapability->preview_sizes_tbl, m_pCapability->preview_sizes_tbl_cnt);
+                m_pCapability->video_sizes_tbl, m_pCapability->video_sizes_tbl_cnt);
         set(KEY_SUPPORTED_PREVIEW_SIZES, previewSizeValues.string());
         ALOGD("%s: supported preview sizes: %s", __func__, previewSizeValues.string());
         // Set default preview size
-        CameraParameters::setPreviewSize(m_pCapability->preview_sizes_tbl[0].width,
-                                         m_pCapability->preview_sizes_tbl[0].height);
+        CameraParameters::setPreviewSize(m_pCapability->video_sizes_tbl[0].width,
+                                         m_pCapability->video_sizes_tbl[0].height);
     } else {
         ALOGE("%s: supported preview sizes cnt is 0 or exceeds max!!!", __func__);
     }
