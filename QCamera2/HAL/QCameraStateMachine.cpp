@@ -534,11 +534,33 @@ int32_t QCameraStateMachine::procEvtPreviewStoppedState(qcamera_sm_evt_enum_t ev
             m_parent->signalAPIResult(&result);
         }
         break;
-    case QCAMERA_SM_EVT_EVT_INTERNAL:
+    case QCAMERA_SM_EVT_THERMAL_NOTIFY:
+        {
+            rc = m_parent->updateThermalLevel(
+                    *(qcamera_thermal_level_enum_t *)&payload);
+        }
+        break;
     case QCAMERA_SM_EVT_EVT_NOTIFY:
+        {
+            mm_camera_event_t *cam_evt = (mm_camera_event_t *)payload;
+            switch (cam_evt->server_event_type) {
+            case CAM_EVENT_TYPE_DAEMON_DIED:
+                {
+                    m_parent->sendEvtNotify(CAMERA_MSG_ERROR,
+                                            CAMERA_ERROR_SERVER_DIED,
+                                            0);
+                }
+                break;
+            default:
+                ALOGE("%s: Invalid internal event %d in state(%d)",
+                            __func__, cam_evt->server_event_type, m_state);
+                break;
+            }
+        }
+        break;
+    case QCAMERA_SM_EVT_EVT_INTERNAL:
     case QCAMERA_SM_EVT_JPEG_EVT_NOTIFY:
     case QCAMERA_SM_EVT_SNAPSHOT_DONE:
-    case QCAMERA_SM_EVT_THERMAL_NOTIFY:
     default:
         ALOGE("%s: cannot handle evt(%d) in state(%d)", __func__, evt, m_state);
         break;
@@ -798,8 +820,25 @@ int32_t QCameraStateMachine::procEvtPreviewReadyState(qcamera_sm_evt_enum_t evt,
             m_parent->signalAPIResult(&result);
         }
         break;
-    case QCAMERA_SM_EVT_EVT_INTERNAL:
     case QCAMERA_SM_EVT_EVT_NOTIFY:
+        {
+            mm_camera_event_t *cam_evt = (mm_camera_event_t *)payload;
+            switch (cam_evt->server_event_type) {
+            case CAM_EVENT_TYPE_DAEMON_DIED:
+                {
+                    m_parent->sendEvtNotify(CAMERA_MSG_ERROR,
+                                            CAMERA_ERROR_SERVER_DIED,
+                                            0);
+                }
+                break;
+            default:
+                ALOGE("%s: Invalid internal event %d in state(%d)",
+                            __func__, cam_evt->server_event_type, m_state);
+                break;
+            }
+        }
+        break;
+    case QCAMERA_SM_EVT_EVT_INTERNAL:
     case QCAMERA_SM_EVT_JPEG_EVT_NOTIFY:
     case QCAMERA_SM_EVT_SNAPSHOT_DONE:
     case QCAMERA_SM_EVT_THERMAL_NOTIFY:

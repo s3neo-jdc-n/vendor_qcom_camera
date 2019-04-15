@@ -75,6 +75,7 @@ typedef enum {
     CAM_FORMAT_YUV_420_YV12,
     CAM_FORMAT_YUV_422_NV16,
     CAM_FORMAT_YUV_422_NV61,
+    CAM_FORMAT_UNKNOWN,
 
     /* Please note below are the defintions for raw image.
      * Any format other than raw image format should be declared
@@ -177,8 +178,6 @@ typedef enum {
     /* generic 8-bit raw */
     CAM_FORMAT_JPEG_RAW_8BIT,
     CAM_FORMAT_META_RAW_8BIT,
-
-    CAM_FORMAT_UNKNOWN,
 
     CAM_FORMAT_MAX
 } cam_format_t;
@@ -675,11 +674,10 @@ typedef  struct {
 
 } cam_metadata_info_t;
 
-//This has a unknown length so we keep it that long in case we need to add something...
 //All empty fields are assumed to be uint32_t
 //Update the parm_buffer_t accordingly!!!!
 
-//This has a length of 68 but we only have 60
+//This has a length of 68
 typedef enum {
    CAM_INTF_PARM_QUERY_FLASH4SNAP,
    CAM_INTF_PARM_EXPOSURE,

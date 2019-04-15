@@ -3550,6 +3550,10 @@ int32_t QCameraParameters::adjustPreviewFpsRange(cam_fps_range_t *fpsRange)
         return BAD_VALUE;
     }
 
+    if ( m_pParamBuf == NULL ) {
+        return NO_INIT;
+    }
+
     int32_t rc = initBatchUpdate(m_pParamBuf);
     if ( rc != NO_ERROR ) {
         ALOGE("%s:Failed to initialize group update table", __func__);
@@ -5803,6 +5807,10 @@ int32_t QCameraParameters::setFrameSkip(enum msm_vfe_frame_skip_pattern pattern)
     int32_t rc = NO_ERROR;
     int32_t value = (int32_t)pattern;
 
+    if ( m_pParamBuf == NULL ) {
+        return NO_INIT;
+    }
+
     if(initBatchUpdate(m_pParamBuf) < 0 ) {
         ALOGE("%s:Failed to initialize group update table", __func__);
         return BAD_TYPE;
@@ -6202,8 +6210,6 @@ int32_t QCameraParameters::commitParamChanges()
 
     // update local changes
     m_bRecordingHint = m_bRecordingHint_new;
-
-
     m_bZslMode = m_bZslMode_new;
 
     return NO_ERROR;
