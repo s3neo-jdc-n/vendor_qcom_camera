@@ -30,4 +30,5 @@ To-Do list:
 - get the full kernel IOCTL list the server is using including the I2C write arrays
 
 Next Milestone:
-- create mm-camera-intf which works with stock HAL so we can read the actual IOCTL's passing through it. SKIPPED ^^
+- create mm-camera-intf which works with stock HAL so we can read the actual IOCTL's passing through it. DONE ^^
+- modify the libmmcamera_interface so we can take pictures and videos....
