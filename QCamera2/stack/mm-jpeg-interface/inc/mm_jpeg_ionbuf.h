@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, The Linux Foundataion. All rights reserved.
+/* Copyright (c) 2013, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,26 +27,55 @@
  *
  */
 
-#include "QCamera2Factory.h"
+#ifndef __MM_JPEG_IONBUF_H__
+#define __MM_JPEG_IONBUF_H__
 
-static hw_module_t camera_common = {
-    tag: HARDWARE_MODULE_TAG,
-    module_api_version: CAMERA_MODULE_API_VERSION_1_0,
-    hal_api_version: HARDWARE_HAL_API_VERSION,
-    id: CAMERA_HARDWARE_MODULE_ID,
-    name: "QCamera Module",
-    author: "Qualcomm Innovation Center Inc",
-    methods: &qcamera::QCamera2Factory::mModuleMethods,
-    dso: NULL,
-    reserved:  {0},
-};
 
-camera_module_t HAL_MODULE_INFO_SYM = {
-    common: camera_common,
-    get_number_of_cameras: qcamera::QCamera2Factory::get_number_of_cameras,
-    get_camera_info: qcamera::QCamera2Factory::get_camera_info,
-    set_callbacks: NULL,
-    get_vendor_tag_ops: NULL,
-    open_legacy: NULL,
-    reserved:  {0}
-};
+#include <stdio.h>
+#include <linux/msm_ion.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <errno.h>
+#include <linux/android_pmem.h>
+#include <fcntl.h>
+#include "mm_jpeg_dbg.h"
+
+typedef struct  {
+  struct ion_fd_data ion_info_fd;
+  struct ion_allocation_data alloc;
+  int p_pmem_fd;
+  long size;
+  int ion_fd;
+  uint8_t *addr;
+} buffer_t;
+
+/** buffer_allocate:
+ *
+ *  Arguments:
+ *     @p_buffer: ION buffer
+ *
+ *  Return:
+ *     buffer address
+ *
+ *  Description:
+ *      allocates ION buffer
+ *
+ **/
+void* buffer_allocate(buffer_t *p_buffer, int cached);
+
+/** buffer_deallocate:
+ *
+ *  Arguments:
+ *     @p_buffer: ION buffer
+ *
+ *  Return:
+ *     buffer address
+ *
+ *  Description:
+ *      deallocates ION buffer
+ *
+ **/
+int buffer_deallocate(buffer_t *p_buffer);
+
+#endif
+
